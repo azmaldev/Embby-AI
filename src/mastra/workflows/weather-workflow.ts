@@ -101,7 +101,7 @@ const planActivities = createStep({
       throw new Error('Forecast data not found')
     }
 
-    const agent = mastra?.getAgent('weatherAgent');
+    const agent = mastra?.getAgent('embby-agent');
     if (!agent) {
       throw new Error('Weather agent not found');
     }

@@ -5,6 +5,7 @@ import { fastembed } from '@mastra/fastembed';
 import { weather } from '../tools/weather-tool';
 import { calculator } from '../tools/calculator-tool';
 import { webSearch, webFetch } from '../tools/web-tools';
+import { read, write, edit, list, search, remove } from '../tools/file-tools';
 import { scorers } from '../scorers/weather-scorer';
 
 export const embbyAgent = new Agent({
@@ -24,9 +25,12 @@ Your primary function is to help users with their queries. When responding about
 Use the weather to fetch current weather data.
 Use the calculator for any mathematical calculations.
 Use the webSearch to search the web for current or factual information.
-Use the webFetch to read the full content of a specific URL after a search result looks promising.`,
-  model: 'groq/llama-3.3-70b-versatile',
-  tools: { weather, calculator, webSearch, webFetch },
+Use the webFetch to read the full content of a specific URL after a search result looks promising.
+Use the file tools (read, write, edit, list, search, remove) to work with files in the project. Always prefer read over write for examining files, and edit (exact string replacement) over write for targeted changes. Write, edit, and delete operations require user approval.
+
+You have a skills system at src/mastra/skills/. Skills are .md files that capture knowledge, preferences, and behavior patterns you learn. At the start of each conversation, use read_file with path: "src/mastra/skills/skill_creator.md" to learn how to create skills. Use list_directory with dirPath: "src/mastra/skills" to check what skills exist. Use read_file with the full path (e.g. path: "src/mastra/skills/email_writing_style.md") to load relevant skills. When you learn something worth remembering, use write_file with the full path to create a new skill following the skill_creator.md format. Never modify or delete skill_creator.md. Skills make you smarter over time — use them.`,
+  model: 'groq/gpt-oss-120b',
+  tools: { weather, calculator, webSearch, webFetch, read, write, edit, list, search, remove },
   scorers: {
     toolCallAppropriateness: {
       scorer: scorers.toolCallAppropriatenessScorer,
@@ -63,7 +67,7 @@ Use the webFetch to read the full content of a specific URL after a search resul
     options: {
       semanticRecall: true,
       observationalMemory: {
-        model: 'groq/llama-3.3-70b-versatile',
+        model: 'groq/gpt-oss-120b',
       },
     },
   }),

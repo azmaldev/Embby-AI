@@ -1,24 +1,34 @@
 import { z } from 'zod';
-import { createToolCallAccuracyScorerCode } from '@mastra/evals/scorers/prebuilt';
+import { createToolCallAccuracyScorerLLM } from '@mastra/evals/scorers/prebuilt';
 import { createCompletenessScorer } from '@mastra/evals/scorers/prebuilt';
 import { getAssistantMessageFromRunOutput, getUserMessageFromRunInput } from '@mastra/evals/scorers/utils';
 import { createScorer } from '@mastra/core/evals';
 
-export const toolCallAppropriatenessScorer = createToolCallAccuracyScorerCode({
-  expectedTool: 'weather',
-  strictMode: false,
+export const toolCallAppropriatenessScorer = createToolCallAccuracyScorerLLM({
+  model: 'groq/openai/gpt-oss-120b',
+  availableTools: [
+    { name: 'get-weather', description: 'Get current weather for a location' },
+    { name: 'calculator', description: 'Evaluate a mathematical expression. Use for arithmetic that the model cannot reliably compute on its own.' },
+    { name: 'web-search', description: 'Search the web for current information. Use only when the user asks about something recent or you are unsure of a fact.' },
+    { name: 'web-fetch', description: 'Fetch and read the full content of a specific URL. Use only after a search result looks promising and needs more detail.' },
+    { name: 'read_file', description: 'Read the full contents of a file. Use this to examine source code, config files, or any text file in the project.' },
+    { name: 'write_file', description: 'Create a new file or overwrite an existing one with new content. Requires approval before writing to disk.' },
+    { name: 'edit_file', description: 'Make a precise edit to a file by replacing one exact string with another. Requires approval before modifying the file.' },
+    { name: 'list_directory', description: 'List files and directories in a given path. Use a glob-like pattern (e.g., "**/*.ts") to filter results.' },
+    { name: 'grep_files', description: 'Search file contents for a regex pattern. Returns file paths and matching lines.' },
+    { name: 'delete_file', description: 'Delete a file from the project. Requires approval before deleting.' },
+  ],
 });
 
 export const completenessScorer = createCompletenessScorer();
 
-// Custom LLM-judged scorer: evaluates if non-English locations are translated appropriately
 export const translationScorer = createScorer({
   id: 'translation-quality-scorer',
   name: 'Translation Quality',
   description: 'Checks that non-English location names are translated and used correctly',
   type: 'agent',
   judge: {
-    model: 'groq/gpt-oss-120b',
+    model: 'groq/openai/gpt-oss-120b',
     instructions:
       'You are an expert evaluator of translation quality for geographic locations. ' +
       'Determine whether the user text mentions a non-English location and whether the assistant correctly uses an English translation of that location. ' +
@@ -57,16 +67,16 @@ export const translationScorer = createScorer({
             {
             "nonEnglish": boolean,
             "translated": boolean,
-            "confidence": number, // 0-1
+            "confidence": number,
             "explanation": string
             }
         `,
   })
   .generateScore(({ results }) => {
     const r = (results as any)?.analyzeStepResult || {};
-    if (!r.nonEnglish) return 1; // If not applicable, full credit
+    if (!r.nonEnglish) return 1;
     if (r.translated) return Math.max(0, Math.min(1, 0.7 + 0.3 * (r.confidence ?? 1)));
-    return 0; // Non-English but not translated
+    return 0;
   })
   .generateReason(({ results, score }) => {
     const r = (results as any)?.analyzeStepResult || {};

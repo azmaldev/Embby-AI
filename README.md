@@ -1,11 +1,15 @@
-<h1 align="center">Embby AI</h1>
+﻿<p align="center">
+  <img src="openseal.gif" alt="OpenSeal" width="100%" />
+</p>
+
+<h1 align="center">OpenSeal</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Mastra-7C3AED?style=for-the-badge&logo=mastra&logoColor=white" alt="Mastra" />
-  <img src="https://img.shields.io/badge/Groq-FF5500?style=for-the-badge&logo=groq&logoColor=white" alt="Groq" />
+  <img src="https://img.shields.io/badge/OpenRouter-FF5500?style=for-the-badge&logo=openrouter&logoColor=white" alt="OpenRouter" />
   <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
-  <img src="https://img.shields.io/badge/GPT%20OSS%20120B-Model-6366F1?style=for-the-badge" alt="GPT OSS 120B" />
+  <img src="https://img.shields.io/badge/Any%20Model-6366F1?style=for-the-badge&logo=openrouter&logoColor=white" alt="Any Model" />
 </p>
 
 <p align="center">
@@ -14,9 +18,9 @@
 
 ---
 
-## 🧠 What is Embby AI?
+## 🧠 What is OpenSeal?
 
-Embby AI is a TypeScript-based agent powered by the [Mastra framework](https://mastra.ai). It can fetch live weather, search the web, calculate math, read and write files, and — most importantly — **learn from experience** by creating its own skills as `.md` files.
+OpenSeal is a TypeScript-based agent powered by the [Mastra framework](https://mastra.ai). It can fetch live weather, search the web, calculate math, read and write files, and — most importantly — **learn from experience** by creating its own skills as `.md` files.
 
 ---
 
@@ -27,7 +31,7 @@ Embby AI is a TypeScript-based agent powered by the [Mastra framework](https://m
 | Runtime | Node.js ≥ 22.13 |
 | Language | TypeScript 6 |
 | Agent Framework | Mastra |
-| LLM Provider | Groq (`gpt-oss-120b`) |
+| LLM Provider | OpenRouter (any model) |
 | Embeddings | FastEmbed (local, no API key) |
 | Storage | LibSQL (file-based) |
 | Memory | Semantic Recall + Observational Memory |
@@ -36,7 +40,7 @@ Embby AI is a TypeScript-based agent powered by the [Mastra framework](https://m
 
 ## 🛠️ Tools
 
-Embby AI has **10 tools** across 4 categories:
+OpenSeal has **10 tools** across 4 categories:
 
 ### 🌤️ Real-world Access
 | Tool | id | Description |
@@ -66,18 +70,18 @@ Embby AI has **10 tools** across 4 categories:
 
 ## 🎓 Skills System
 
-Embby AI learns from experience. It can create `.md` skill files that capture knowledge, preferences, and behavior patterns.
+OpenSeal learns from experience. It can create `.md` skill files that capture knowledge, preferences, and behavior patterns.
 
 ### How it works
 
 ```
 User: "I always want temperatures in Celsius"
   ↓
-Embby reads skill_creator.md for the format
+OpenSeal reads skill_creator.md for the format
   ↓
-Embby creates skills/celsius_preference.md (with your approval)
+OpenSeal creates skills/celsius_preference.md (with your approval)
   ↓
-Next conversation: Embby loads the skill, remembers your preference
+Next conversation: OpenSeal loads the skill, remembers your preference
 ```
 
 ### Skill format
@@ -96,10 +100,10 @@ The meta-skill that teaches the agent **how** to create skills. Located at `src/
 ## 🗂️ Project Structure
 
 ```
-Embby-AI/
+OpenSeal/
 ├── src/mastra/
 │   ├── agents/
-│   │   └── embby-agent.ts        # Main agent definition
+│   │   └── openseal-agent.ts        # Main agent definition
 │   ├── tools/
 │   │   ├── weather-tool.ts       # Live weather API
 │   │   ├── calculator-tool.ts    # Safe math evaluator
@@ -112,7 +116,7 @@ Embby-AI/
 │   ├── skills/
 │   │   └── skill_creator.md      # Meta-skill (read-only)
 │   └── index.ts                  # Mastra entry point
-├── .env                          # API keys (Groq)
+├── .env                          # API keys (OpenRouter)
 ├── package.json
 └── tsconfig.json
 ```
@@ -134,17 +138,19 @@ npm run dev
 
 ### Environment
 
-Create a `.env` file with your Groq API key:
+Create a `.env` file (see `.env.example`). OpenSeal uses **OpenRouter**, so you just need an OpenRouter API key and can pick any model:
 
 ```env
-GROQ_API_KEY=gsk_your_key_here
+OPENROUTER_API_KEY=sk-or-your-key-here
+OPENROUTER_MODEL=openrouter/anthropic/claude-haiku-4.5
 ```
+
 
 ---
 
 ## 🧠 Memory
 
-Embby AI uses a dual memory system:
+OpenSeal uses a dual memory system:
 
 | Memory Type | What it does |
 |-------------|-------------|
@@ -155,5 +161,5 @@ Embby AI uses a dual memory system:
 ---
 
 <p align="center">
-  <sub>Built with Mastra · Powered by Groq · Self-improving by design</sub>
+  <sub>Built with Mastra · Powered by OpenRouter · Self-improving by design</sub>
 </p>

@@ -8,9 +8,10 @@ import { weather } from '../tools/weather-tool';
 import { calculator } from '../tools/calculator-tool';
 import { webSearch, webFetch } from '../tools/web-tools';
 import { read, write, edit, list, search, remove } from '../tools/file-tools';
-import { scorers } from '../scorers/embby-scorers';
+import { scorers } from '../scorers/openseal-scorers';
+import { opensealModel } from '../model';
 
-export const embbyInstructions = `You are Embby AI, a self-improving personal assistant. You don't just answer questions — you take real actions (searching, fetching, computing, reading/writing files) and you get better at helping this specific user over time by building your own skills.
+export const opensealInstructions = `You are OpenSeal, a self-improving personal assistant. You don't just answer questions — you take real actions (searching, fetching, computing, reading/writing files) and you get better at helping this specific user over time by building your own skills.
 
 ## Identity & Approach
 - Be concise and direct by default. Match detail to what the user actually needs, not the maximum possible.
@@ -51,11 +52,11 @@ You have a persistent skills directory at \`src/mastra/skills/\` — this is how
 - Cite where information came from when using webSearch/webFetch results, and don't overstate confidence in anything you haven't verified.
 `;
 
-export const embbyAgent = new Agent({
-  id: 'embby-agent',
-  name: 'Embby AI',
-  instructions: embbyInstructions,
-  model: 'groq/openai/gpt-oss-120b',
+export const opensealAgent = new Agent({
+  id: 'openseal-agent',
+  name: 'OpenSeal',
+  instructions: opensealInstructions,
+  model: opensealModel,
   tools: { weather, calculator, webSearch, webFetch, read, write, edit, list, search, remove },
   scorers: {
     toolCallAppropriateness: {
@@ -82,18 +83,18 @@ export const embbyAgent = new Agent({
   },
   memory: new Memory({
     storage: new LibSQLStore({
-      id: 'embby-storage',
-      url: 'file:./embby.db',
+      id: 'openseal-storage',
+      url: 'file:./openseal.db',
     }),
     vector: new LibSQLVector({
-      id: 'embby-vector',
-      url: 'file:./embby.db',
+      id: 'openseal-vector',
+      url: 'file:./openseal.db',
     }),
     embedder: fastembed,
     options: {
       semanticRecall: true,
       observationalMemory: {
-  model: 'groq/openai/gpt-oss-120b',
+  model: opensealModel,
       },
     },
   }),

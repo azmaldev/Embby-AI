@@ -3,21 +3,25 @@ import { createToolCallAccuracyScorerLLM } from '@mastra/evals/scorers/prebuilt'
 import { createCompletenessScorer } from '@mastra/evals/scorers/prebuilt';
 import { getAssistantMessageFromRunOutput, getUserMessageFromRunInput } from '@mastra/evals/scorers/utils';
 import { createScorer } from '@mastra/core/evals';
+import type { Tool } from '@mastra/core/tools';
+import { opensealModel } from '../model';
+
+const availableTools: Tool[] = [
+  { id: 'get-weather', description: 'Get current weather for a location' } as Tool,
+  { id: 'calculator', description: 'Evaluate a mathematical expression. Use for arithmetic that the model cannot reliably compute on its own.' } as Tool,
+  { id: 'web-search', description: 'Search the web for current information. Use only when the user asks about something recent or you are unsure of a fact.' } as Tool,
+  { id: 'web-fetch', description: 'Fetch and read the full content of a specific URL. Use only after a search result looks promising and needs more detail.' } as Tool,
+  { id: 'read_file', description: 'Read the full contents of a file. Use this to examine source code, config files, or any text file in the project.' } as Tool,
+  { id: 'write_file', description: 'Create a new file or overwrite an existing one with new content. Requires approval before writing to disk.' } as Tool,
+  { id: 'edit_file', description: 'Make a precise edit to a file by replacing one exact string with another. Requires approval before modifying the file.' } as Tool,
+  { id: 'list_directory', description: 'List files and directories in a given path. Use a glob-like pattern (e.g., "**/*.ts") to filter results.' } as Tool,
+  { id: 'grep_files', description: 'Search file contents for a regex pattern. Returns file paths and matching lines.' } as Tool,
+  { id: 'delete_file', description: 'Delete a file from the project. Requires approval before deleting.' } as Tool,
+];
 
 export const toolCallAppropriatenessScorer = createToolCallAccuracyScorerLLM({
-  model: 'groq/openai/gpt-oss-120b',
-  availableTools: [
-    { name: 'get-weather', description: 'Get current weather for a location' },
-    { name: 'calculator', description: 'Evaluate a mathematical expression. Use for arithmetic that the model cannot reliably compute on its own.' },
-    { name: 'web-search', description: 'Search the web for current information. Use only when the user asks about something recent or you are unsure of a fact.' },
-    { name: 'web-fetch', description: 'Fetch and read the full content of a specific URL. Use only after a search result looks promising and needs more detail.' },
-    { name: 'read_file', description: 'Read the full contents of a file. Use this to examine source code, config files, or any text file in the project.' },
-    { name: 'write_file', description: 'Create a new file or overwrite an existing one with new content. Requires approval before writing to disk.' },
-    { name: 'edit_file', description: 'Make a precise edit to a file by replacing one exact string with another. Requires approval before modifying the file.' },
-    { name: 'list_directory', description: 'List files and directories in a given path. Use a glob-like pattern (e.g., "**/*.ts") to filter results.' },
-    { name: 'grep_files', description: 'Search file contents for a regex pattern. Returns file paths and matching lines.' },
-    { name: 'delete_file', description: 'Delete a file from the project. Requires approval before deleting.' },
-  ],
+  model: opensealModel,
+  availableTools,
 });
 
 export const completenessScorer = createCompletenessScorer();
@@ -28,7 +32,7 @@ export const translationScorer = createScorer({
   description: 'Checks that non-English location names are translated and used correctly',
   type: 'agent',
   judge: {
-    model: 'groq/openai/gpt-oss-120b',
+    model: opensealModel,
     instructions:
       'You are an expert evaluator of translation quality for geographic locations. ' +
       'Determine whether the user text mentions a non-English location and whether the assistant correctly uses an English translation of that location. ' +

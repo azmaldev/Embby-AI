@@ -1,5 +1,5 @@
 ﻿<p align="center">
-  <img src="openseal.gif" alt="OpenSeal" width="300" />
+  <img src="openseal.gif" alt="OpenSeal" width="200" />
 </p>
 
 <h1 align="center">OpenSeal</h1>
